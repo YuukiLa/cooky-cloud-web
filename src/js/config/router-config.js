@@ -21,11 +21,11 @@ router.beforeEach((to, from, next) => {
   let token = Utils.getLocal("USER_TOKEN")
   let hasRouters = store.getters.hasRouters
   HeyUI.$LoadingBar.start();
-  if (to.title) {
-    document.title = to.title + ' - 管理应用'
-  } else {
-    document.title = '管理系统'
-  }
+  // if (to.title) {
+  //   document.title = to.title + ' - 管理应用'
+  // } else {
+  //   document.title = '管理系统'
+  // }
 
   if (token) {
 
@@ -39,6 +39,8 @@ router.beforeEach((to, from, next) => {
         G.trigger('SYS_MENU_UPDATE')
         go(to, next)
       }).catch(e => {
+        log(e)
+        HeyUI.$Message.error(e.data.msg)
         localStorage.clear()
         store.commit('setHasRouters', false)
         next({name: "Login"})

@@ -111,13 +111,16 @@
                 })
             },
             addUser() {
-                this.user.roleId = this.user.roleIds.join(',')
-                this.$axios.postJson('/rbac/user', this.user).then(res => {
-                    this.$Message.success("新增用户成功")
-                    this.closeModal(true)
-                }).catch(e => {
-                    this.$Message.error('新增用户失败')
-                })
+                let valid = this.$refs['userForm'].valid()
+                if(valid) {
+                    this.user.roleId = this.user.roleIds.join(',')
+                    this.$axios.postJson('/rbac/user', this.user).then(res => {
+                        this.$Message.success("新增用户成功")
+                        this.closeModal(true)
+                    }).catch(e => {
+                        this.$Message.error('新增用户失败')
+                    })
+                }
             },
             setUser(user) {
                 Object.keys(this.user).forEach(key => {

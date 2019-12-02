@@ -9,6 +9,7 @@ module.exports = {
       entry: 'src/app.js',
       template: 'index.html',
       filename: 'index.html',
+      favicon: path.resolve(__dirname, 'src/images/logo.ico'),
       chunks: ['chunk-vendors', 'chunk-common', 'index']
     }
   },
