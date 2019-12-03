@@ -163,7 +163,7 @@
         methods: {
             resloveAvatar(avatar) {
                 avatar = avatar? avatar:'avatar.png'
-                return require(`@/images/${avatar}`)
+                return require(`@/images/avatar/${avatar}`)
             },
             listenResize() {
                 let windowWidth = window.innerWidth;
@@ -194,7 +194,7 @@
                     localStorage.clear()
                     this.$router.replace({name: 'Login'});
                 } else {
-                    this.$router.push({name: 'AccountBasic'});
+                    this.$router.push({name: 'UserInfo'});
                 }
             },
             showSettingModal() {

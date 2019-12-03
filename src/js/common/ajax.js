@@ -70,8 +70,8 @@ service.interceptors.response.use((config) => {
     if (status == 500) {
       HeyUI.$Message.error(data.msg || '后台异常')
     }
-    return Promise.reject(error)
   }
+  return Promise.reject(error)
 })
 let ajax = {
   PREFIX: '',

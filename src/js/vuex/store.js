@@ -35,6 +35,7 @@ export default new Vuex.Store({
   },
   actions: {
     updateAccount(context, data) {
+      Utils.saveLocal("USER", data)
       context.commit('updateAccount', data);
     },
     updateSiderCollapse(context, data) {

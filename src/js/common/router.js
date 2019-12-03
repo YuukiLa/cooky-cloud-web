@@ -18,12 +18,12 @@ const routes = [{
     meta: {title: '首页', icon: 'icon-monitor', hidden: true},
     component: (resolve) => require(['components/home/index'], resolve),
   },
-    // {
-    //   path: '/account-basic',
-    //   name: 'AccountBasic',
-    //   component: (resolve) => require(['components/demo-components/account/account'], resolve),
-    //   meta: {title: '个人中心', icon: 'icon-head', hidden: true}
-    // }
+    {
+      path: '/user-info',
+      name: 'UserInfo',
+      component: (resolve) => require(['components/home/user-info-page'], resolve),
+      meta: {title: '个人中心', icon: 'icon-head', hidden: true}
+    }
    ]
 },
 

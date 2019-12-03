@@ -219,7 +219,7 @@
                                 return
                             }
                             this.$store.dispatch('updateAccount', res.principal)
-                            Utils.saveLocal("USER", res.principal)
+
                             this.loading = false
                             window.location = '/'
                         }).catch(e => {

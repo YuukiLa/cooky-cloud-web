@@ -33,7 +33,7 @@
             </TableItem>
             <TableItem title="操作" align="center">
               <template slot-scope="{data}">
-                <i class="icon-eye green-color" v-tooltip="true" content="查看更多"></i>&nbsp;
+                <i class="icon-eye green-color" v-tooltip="true" content="查看更多" @click="showUserInfo(data)"></i>&nbsp;
                 <i class="icon-cog yellow-color" v-tooltip="true" content="修改用户"  @click="editUser(data)" v-has-perms="'user:edit'"></i>&nbsp;
                 <Poptip content="是否删除？" @confirm="deleteUser(data.id)">
                   <i class="h-icon-trash red-color" v-tooltip="true" content="删除用户" v-has-perms="'user:del'"></i>
@@ -46,16 +46,17 @@
       </div>
     </div>
     <user-edit ref="userEdit" :show-modal="showModal" @closeModal="closeModal"></user-edit>
+    <user-info-modal ref="userInfo" :show-modal="showUserInfoModal" @closeModal="showUserInfoModal=false"></user-info-modal>
   </div>
 </template>
 
 <script>
     import userEdit from "./userEdit";
-
+    import userInfoModal from "./userInfoModal";
     export default {
         name: "user",
         components: {
-            userEdit
+            userEdit,userInfoModal
         },
         data() {
             return {
@@ -68,7 +69,8 @@
                     size: 10,
                     total: 0
                 },
-                showModal: false
+                showModal: false,
+                showUserInfoModal: false
             }
         },
         watch: {
@@ -77,6 +79,10 @@
             }
         },
         methods: {
+            showUserInfo(user) {
+                this.$refs['userInfo'].setUser(user)
+                this.showUserInfoModal = true
+            },
             pageChange(value) {
               this.page = value
               this.initUsers()
