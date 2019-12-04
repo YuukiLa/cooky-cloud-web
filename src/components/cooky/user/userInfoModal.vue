@@ -2,7 +2,7 @@
     <div>
       <Modal v-model="showModal" :closeOnMask="false">
         <header class="h-modal-header">用户信息</header>
-        <div class="h-panel" v-width="850">
+        <div class="h-panel" v-width="1200">
           <div class="h-panel-body">
             <user-info :user="user"></user-info>
           </div>

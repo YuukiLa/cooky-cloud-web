@@ -69,7 +69,7 @@
                 isDeleteMode: false,
                 menu: {
                     id: '',
-                    parentId: '',
+                    parentId: 0,
                     menuName: '',
                     menuPath: '',
                     menuComponent: '',
@@ -177,7 +177,7 @@
             resetMenu() {
                 this.menu = {
                     id: '',
-                    parentId: '',
+                    parentId: 0,
                     menuName: '',
                     menuPath: '',
                     menuComponent: '',
