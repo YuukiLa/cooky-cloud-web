@@ -40,17 +40,17 @@ module.exports = {
       })
     ]
   },
-  devServer: {
-    proxy: {
-      // 此处应该配置为开发服务器的后台地址
-      // 配置文档： https://cli.vuejs.org/zh/config/#devserver-proxy
-      '/api': {
-        target: 'http://127.0.0.1:10000/',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': '/'
-        }
-      }
-    }
-  }
+  // devServer: {
+  //   proxy: {
+  //     // 此处应该配置为开发服务器的后台地址
+  //     // 配置文档： https://cli.vuejs.org/zh/config/#devserver-proxy
+  //     '/api': {
+  //       target: 'http://127.0.0.1:10000/',
+  //       changeOrigin: true,
+  //       pathRewrite: {
+  //         '^/api': '/'
+  //       }
+  //     }
+  //   }
+  // }
 };

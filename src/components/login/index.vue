@@ -188,7 +188,7 @@
         },
         computed: {
             codeUrl() {
-                return `http://127.0.0.1:10000/auth/captcha?key=${this.loginForm.key}`
+                return `${process.env.VUE_APP_BASE_API}/auth/captcha?key=${this.loginForm.key}`
             }
         },
         mounted() {

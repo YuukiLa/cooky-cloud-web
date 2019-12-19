@@ -5,7 +5,7 @@ import debugInfo from "less/lib/less/tree/debug-info";
 
 // 系统令牌刷新请求对象
 const refresh_service = axios.create({
-  baseURL: "/api",
+  baseURL: process.env.VUE_APP_BASE_API,
   timeout: 5000,
   responseType: 'json',
   validateStatus(status) {
@@ -14,7 +14,7 @@ const refresh_service = axios.create({
 })
 // 系统全局请求对象
 const service = axios.create({
-  baseURL: "/api",
+  baseURL: process.env.VUE_APP_BASE_API,
   timeout: 5000,
   responseType: 'json',
   validateStatus(status) {

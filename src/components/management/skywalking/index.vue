@@ -14,7 +14,7 @@
     },
     computed: {
       url() {
-        return manageConfig.swaggerUrl
+        return manageConfig.skywalkingUrl
       }
     }
   }
