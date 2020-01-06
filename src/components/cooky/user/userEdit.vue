@@ -55,116 +55,122 @@
 </template>
 
 <script>
-    export default {
-        name: "userEdit",
-        props: {
-            showModal: {
-                type: Boolean,
-                default: false
-            }
+  export default {
+    name: "userEdit",
+    props: {
+      showModal: {
+        type: Boolean,
+        default: false
+      }
+    },
+    data() {
+      return {
+        sexData: [
+          {title: '男', key: '0'},
+          {title: '女', key: '1'},
+          {title: '保密', key: '2'},
+        ],
+        param: {
+          keyName: 'id',
+          parentName: 'parentId',
+          titleName: 'deptName',
+          dataMode: 'list',
+          datas: []
         },
-        data() {
-            return {
-                requireFiled: {
-                    required: ['username', 'password']
-                },
-                sexData: [
-                    {title: '男', key: '0'},
-                    {title: '女', key: '1'},
-                    {title: '保密', key: '2'},
-                ],
-                param: {
-                    keyName: 'id',
-                    parentName: 'parentId',
-                    titleName: 'deptName',
-                    dataMode: 'list',
-                    datas: []
-                },
-                roles: [],
-                user: {
-                    id: '',
-                    username: '',
-                    password: '',
-                    sex: '',
-                    email: '',
-                    phone: '',
-                    roleIds: [],
-                    deptId: '',
-                    status: 1,
-                    describe: '',
-                }
-            }
-        },
-        computed: {
-            titleStr() {
-                return this.user.id ? '编辑' : '新增'
-            }
-        },
-        methods: {
-            editUser() {
-                this.user.roleId = this.user.roleIds.join(',')
-                this.$axios.putJson('/rbac/user', this.user).then(res => {
-                    this.$Message.success("修改用户成功")
-                    this.closeModal(true)
-                }).catch(e => {
-                    this.$Message.error('修改用户失败')
-                })
-            },
-            addUser() {
-                let valid = this.$refs['userForm'].valid()
-                if(valid) {
-                    this.user.roleId = this.user.roleIds.join(',')
-                    this.$axios.postJson('/rbac/user', this.user).then(res => {
-                        this.$Message.success("新增用户成功")
-                        this.closeModal(true)
-                    }).catch(e => {
-                        this.$Message.error('新增用户失败')
-                    })
-                }
-            },
-            setUser(user) {
-                Object.keys(this.user).forEach(key => {
-                    this.user[key] = user[key]
-                })
-            },
-            closeModal(flag = false) {
-                this.$emit('closeModal', flag)
-                this.resetUser()
-            },
-            resetUser() {
-                this.user = {
-                    id: '',
-                    username: '',
-                    password: '',
-                    sex: '',
-                    email: '',
-                    phone: '',
-                    roleIds: [],
-                    deptId: '',
-                    status: 1,
-                    describe: '',
-                }
-            },
-            initRoles() {
-                this.$axios.get("/rbac/role").then(res => {
-                    this.roles = res
-                }).catch(e => {
-                    this.$Message.error('您没有获取角色的权限，请联系管理员开通')
-                })
-            },
-            initMenu() {
-                this.$axios.get("/rbac/dept/bulk").then(res => {
-                    this.param.datas = res
-                }).catch(e => {
-                    this.$Message.error("您没有获取部门树的权限或者后台异常，请联系管理员")
-                })
-            },
-        },
-        mounted() {
-            this.initRoles()
-            this.initMenu()
+        roles: [],
+        user: {
+          id: '',
+          username: '',
+          password: '',
+          sex: '',
+          email: '',
+          phone: '',
+          roleIds: [],
+          deptId: '',
+          status: 1,
+          describe: '',
         }
+      }
+    },
+    computed: {
+      titleStr() {
+        return this.user.id ? '编辑' : '新增'
+      },
+      requireFiled() {
+        const requireFiled = {required: ['username']}
+        if(!this.user.id) requireFiled.required.push('password')
+          return requireFiled
+
+      }
+    },
+    methods: {
+      editUser() {
+        let valid = this.$refs['userForm'].valid()
+        if (valid.result) {
+          this.user.roleId = this.user.roleIds.join(',')
+          this.$axios.putJson('/rbac/user', this.user).then(res => {
+            this.$Message.success("修改用户成功")
+            this.closeModal(true)
+          }).catch(e => {
+            this.$Message.error('修改用户失败')
+          })
+        }
+      },
+      addUser() {
+        let valid = this.$refs['userForm'].valid()
+        if (valid.result) {
+          this.user.roleId = this.user.roleIds.join(',')
+          this.$axios.postJson('/rbac/user', this.user).then(res => {
+            this.$Message.success("新增用户成功")
+            this.closeModal(true)
+          }).catch(e => {
+            this.$Message.error('新增用户失败')
+          })
+        }
+      },
+      setUser(user) {
+        Object.keys(this.user).forEach(key => {
+          this.user[key] = user[key]
+        })
+      },
+      closeModal(flag = false) {
+        this.$emit('closeModal', flag)
+        this.resetUser()
+      },
+      resetUser() {
+        this.user = {
+          id: '',
+          username: '',
+          password: '',
+          sex: '',
+          email: '',
+          phone: '',
+          roleIds: [],
+          deptId: '',
+          status: 1,
+          describe: '',
+        }
+      },
+      initRoles() {
+        this.$axios.get("/rbac/role").then(res => {
+          this.roles = res
+        }).catch(e => {
+          this.$Message.error('您没有获取角色的权限，请联系管理员开通')
+        })
+      },
+      initMenu() {
+        this.$axios.get("/rbac/dept/bulk").then(res => {
+          this.param.datas = res
+        }).catch(e => {
+          this.$Message.error("您没有获取部门树的权限或者后台异常，请联系管理员")
+        })
+      },
+    },
+    mounted() {
+      this.initRoles()
+      this.initMenu()
     }
+  }
 </script>
 
 <style scoped>

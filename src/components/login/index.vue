@@ -165,86 +165,77 @@
   </div>
 </template>
 <script>
-    export default {
-        data() {
-            return {
-                validationRules: {
-                    required: ['username', 'password', 'code']
-                },
-                loginForm: {
-                    username: 'yuuki',
-                    password: '123456',
-                    key: '',
-                    code: ''
-                },
-                baseParam: {
-                    grant_type: 'password',
-                    client_secret: '123456',
-                    client_id: 'cooky',
-                    scope: 'app'
-                },
-                loading: false
-            };
+  export default {
+    data() {
+      return {
+        validationRules: {
+          required: ['username', 'password', 'code']
         },
-        computed: {
-            codeUrl() {
-                return `${process.env.VUE_APP_BASE_API}/auth/captcha?key=${this.loginForm.key}`
+        loginForm: {
+          username: 'yuuki',
+          password: '123456',
+          key: '',
+          code: ''
+        },
+        baseParam: {
+          grant_type: 'password',
+          client_secret: '123456',
+          client_id: 'cooky',
+          scope: 'app'
+        },
+        loading: false
+      };
+    },
+    computed: {
+      codeUrl() {
+        return `${process.env.VUE_APP_BASE_API}/auth/captcha?key=${this.loginForm.key}`
+      }
+    },
+    mounted() {
+      this.updateKey()
+    },
+    methods: {
+      updateKey() {
+        this.loginForm.key = Utils.uuid()
+      },
+      submit() {
+        let validResult = this.$refs.form.valid();
+        if (validResult.result) {
+          this.loading = true
+          this.$axios.post('/auth/oauth/token', {...this.loginForm, ...this.baseParam}).then(res => {
+            if (res.code) {
+              this.$Message.error(res.msg)
+              this.loading = false
+              return
             }
-        },
-        mounted() {
+            Utils.saveLocal("USER_TOKEN", res.access_token)
+            Utils.saveLocal("USER_REFRESH_TOKEN", res.refresh_token)
+            Utils.saveLocal("EXPIRES_IN", res.expires_in * 1000 + new Date().getTime())
+            this.$axios.get("/auth/user").then(res => {
+              if (res.code === 500) {
+                this.loading = false
+                this.$Message.error(res.msg)
+                localStorage.clear()
+                return
+              }
+              this.$store.dispatch('updateAccount', res.principal)
+              this.loading = false
+              window.location = '/'
+            }).catch(e => {
+
+            })
+            this.$axios.post("/rbac/user/success").then(res => {
+
+            }).catch(e => {
+
+            })
+          }).catch(e => {
+            log(e)
+            this.loading = false
             this.updateKey()
-        },
-        methods: {
-            updateKey() {
-                this.loginForm.key = Utils.uuid()
-            },
-            submit() {
-                let validResult = this.$refs.form.valid();
-                if (validResult.result) {
-                    this.loading = true
-                    this.$axios.post('/auth/oauth/token', {...this.loginForm, ...this.baseParam}).then(res => {
-                        if(res.code) {
-                            this.$Message.error(res.msg)
-                            this.loading = false
-                            return
-                        }
-                        Utils.saveLocal("USER_TOKEN", res.access_token)
-                        Utils.saveLocal("USER_REFRESH_TOKEN", res.refresh_token)
-                        Utils.saveLocal("EXPIRES_IN",res.expires_in*1000+new Date().getTime())
-                        this.$axios.get("/auth/user").then(res => {
-                            if(res.code === 500) {
-                                this.loading = false
-                                this.$Message.error(res.msg)
-                                localStorage.clear()
-                                return
-                            }
-                            this.$store.dispatch('updateAccount', res.principal)
-
-                            this.loading = false
-                            window.location = '/'
-                        }).catch(e => {
-
-                        })
-
-                    }).catch(e => {
-                        log(e)
-                        this.loading = false
-                        this.updateKey()
-                    })
-                    // this.loading = true;
-                    // Utils.saveLocal("USER_TOKEN", "XXXXXXXXXXXXXXXXXX")
-                    // this.loading = false;
-                    // window.location = '/';
-                }
-                // R.Login.login(Login.dispose(this.login)).then(resp => {
-                //   if (resp.ok) {
-                //     let msg = resp.body;
-                //     Utils.saveLocal('token', msg.value);
-                //     window.location = '/';
-                //   }
-                //   this.loading = false;
-                // });
-            }
+          })
         }
-    };
+      }
+    }
+  };
 </script>

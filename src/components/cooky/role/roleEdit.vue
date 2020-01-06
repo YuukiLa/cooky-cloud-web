@@ -16,13 +16,14 @@
             <!--              <template v-slot:label>用户名</template>-->
             <input type="text" v-model="role.roleName">
           </FormItem>
-          <FormItem label="描述" prop="describe">
-            <!--              <template v-slot:label>用户名</template>-->
-            <input type="text" v-model="role.describe">
-          </FormItem>
+
           <FormItem label="菜单">
             <TreePicker :option="param" :useConfirm="false" multiple ref="menuTreepicker" v-model="role.menuIds"
                         choose-mode="independent"></TreePicker>
+          </FormItem>
+          <FormItem label="描述" prop="describe">
+            <!--              <template v-slot:label>用户名</template>-->
+            <textarea v-model="role.describe"></textarea>
           </FormItem>
         </Form>
 
@@ -37,87 +38,95 @@
 </template>
 
 <script>
-    export default {
-        name: "roleEdit",
-        props: {
-            showModal: {
-                type: Boolean,
-                default: false
-            }
+  export default {
+    name: "roleEdit",
+    props: {
+      showModal: {
+        type: Boolean,
+        default: false
+      }
+    },
+    data() {
+      return {
+        role: {
+          id: '',
+          roleName: '',
+          describe: '',
+          menuIds: []
         },
-        data() {
-            return {
-                role: {
-                    id: '',
-                    roleName: '',
-                    describe: '',
-                    menuIds: []
-                },
-                param: {
-                    keyName: 'id',
-                    parentName: 'parentId',
-                    titleName: 'menuTitle',
-                    dataMode: 'list',
-                    datas: []
-                },
-                requireFiled: {
-                    required: ['roleName', 'describe']
-                },
-            }
+        param: {
+          keyName: 'id',
+          parentName: 'parentId',
+          titleName: 'menuTitle',
+          dataMode: 'list',
+          datas: []
         },
-        computed: {
-            titleStr() {
-                return this.role.id ? '编辑' : '新增'
-            }
+        requireFiled: {
+          required: ['roleName']
         },
-        methods: {
-            addRole() {
-                this.role.menuIds = this.role.menuIds.join(",")
-                this.$axios.postJson('/rbac/role', this.role).then(res => {
-                    this.closeModal(true)
-                    this.$Message.success('新增角色成功')
-                }).catch(e => {
-                    this.$Message.error('新增角色失败')
-                })
-            },
-            editRole() {
-                this.role.menuIds = this.role.menuIds.join(",")
-                this.$axios.putJson('/rbac/role', this.role).then(res => {
-                    this.closeModal(true)
-                    this.$Message.success('修改角色成功')
-                }).catch(e => {
-                    this.$Message.error('修改角色失败')
-                })
-            },
-            setRole(role) {
-                Object.keys(this.role).forEach(key => {
-                    this.role[key] = role[key]
-                })
-            },
-            closeModal(flag = false) {
-                this.$emit('closeModal', flag)
-                this.resetRole()
-            },
-            resetRole() {
-                this.role = {
-                    id: '',
-                    roleName: '',
-                    describe: '',
-                    menuIds: []
-                }
-            },
-            initMenu() {
-                this.$axios.get("/rbac/menu/bulk").then(res => {
-                    this.param.datas = res
-                }).catch(e => {
-                    this.$Message.error("您没有获取菜单树的权限或者后台异常，请联系管理员")
-                })
-            },
-        },
-        mounted() {
-            this.initMenu()
+      }
+    },
+    computed: {
+      titleStr() {
+        return this.role.id ? '编辑' : '新增'
+      }
+    },
+    methods: {
+      addRole() {
+        let valid = this.$refs['roleForm'].valid()
+        if (valid.result) {
+          this.role.menuIds = this.role.menuIds.join(",")
+          this.$axios.postJson('/rbac/role', this.role).then(res => {
+            this.closeModal(true)
+            this.$Message.success('新增角色成功')
+          }).catch(e => {
+            this.$Message.error('新增角色失败')
+          })
         }
+
+      },
+      editRole() {
+        let valid = this.$refs['roleForm'].valid()
+        if (valid.result) {
+          this.role.menuIds = this.role.menuIds.join(",")
+          this.$axios.putJson('/rbac/role', this.role).then(res => {
+            this.closeModal(true)
+            this.$Message.success('修改角色成功')
+          }).catch(e => {
+            this.$Message.error('修改角色失败')
+          })
+        }
+
+      },
+      setRole(role) {
+        Object.keys(this.role).forEach(key => {
+          this.role[key] = role[key]
+        })
+      },
+      closeModal(flag = false) {
+        this.$emit('closeModal', flag)
+        this.resetRole()
+      },
+      resetRole() {
+        this.role = {
+          id: '',
+          roleName: '',
+          describe: '',
+          menuIds: []
+        }
+      },
+      initMenu() {
+        this.$axios.get("/rbac/menu/bulk").then(res => {
+          this.param.datas = res
+        }).catch(e => {
+          this.$Message.error("您没有获取菜单树的权限或者后台异常，请联系管理员")
+        })
+      },
+    },
+    mounted() {
+      this.initMenu()
     }
+  }
 </script>
 
 <style scoped>

@@ -13,9 +13,9 @@
         <SysTabs v-if="layoutConfig.showSystab" homePage="Home"></SysTabs>
         <Content>
           <div class="app-frame-content">
-            <!-- <keep-alive> -->
-            <router-view></router-view>
-            <!-- </keep-alive> -->
+             <keep-alive>
+               <router-view></router-view>
+             </keep-alive>
           </div>
 <!--          <HFooter>-->
 <!--            <appFooter></appFooter>-->

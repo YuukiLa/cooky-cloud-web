@@ -3,7 +3,6 @@
     <Row :space-x="20" type="flex" justify="space-around" align="middle">
 
       <Cell :width='6'>
-<!--        <img :src="avatar(user.avatar)" width="235" height="235"/>-->
         <Avatar :src="avatar(user.avatar)" :width="235" fit="contain" noInfo></Avatar>
       </Cell>
       <Cell :width='10' class="info">
