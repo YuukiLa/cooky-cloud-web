@@ -6,7 +6,7 @@ import debugInfo from "less/lib/less/tree/debug-info";
 // 系统令牌刷新请求对象
 const refresh_service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
-  timeout: 5000,
+  // timeout: 5000,
   responseType: 'json',
   validateStatus(status) {
     return status === 200
@@ -15,7 +15,7 @@ const refresh_service = axios.create({
 // 系统全局请求对象
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
-  timeout: 5000,
+  // timeout: 5000,
   responseType: 'json',
   validateStatus(status) {
     return status === 200
@@ -122,7 +122,6 @@ let ajax = {
     return service.get(url, params);
   },
   post: function (url, data, extendParam) {
-    log(url, data)
     return service.post(url, data, {
       transformRequest: [(data) => {
         return qs.stringify(data)
@@ -142,6 +141,34 @@ let ajax = {
   },
   delete: function (url, extendParam) {
     return service.delete(url, extendParam);
+  },
+  upload: function(url,data) {
+    return service.post(url, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  },
+  download: function(url,data, filename) {
+    return service.post(url, data, {
+      transformRequest: [(data) => {
+        return qs.stringify(data)
+      }],
+      responseType: 'blob'
+    }).then(res => {
+      if ('download' in document.createElement('a')) {
+        const elink = document.createElement('a')
+        elink.download = filename
+        elink.style.display = 'none'
+        elink.href = window.URL.createObjectURL(res)
+        document.body.appendChild(elink)
+        elink.click()
+        URL.revokeObjectURL(elink.href)
+        document.body.removeChild(elink)
+      } else {
+        navigator.msSaveBlob(res, filename)
+      }
+    })
   },
   ajax: function (param, extendParam) {
     // let header = {}
